@@ -4,6 +4,7 @@ const router = require("express").Router();
 
 
 router.post("/", (req, res) => {
+  console.log(req.file);
   let originalName =  req.file.name;
   let fileName = '';
   if (hasWhiteSpaceFun.hasWhiteSpace(originalName)) {

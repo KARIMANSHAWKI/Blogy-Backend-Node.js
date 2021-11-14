@@ -2,6 +2,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const app = express();
 const mongoose = require("mongoose");
+const cors = require('cors');
+const multer = require("multer");
+const path = require("path");
 
 // ROUTES
 const authRoute = require("./routes/auth");
@@ -11,8 +14,12 @@ const categoryRoute = require("./routes/categories");
 const uploadImage = require("./services/store-image");
 
 
+app.use("/images", express.static(path.join(__dirname, "/images")));
+
+
 // MIDDLEWARES
 dotenv.config();
+app.use(cors());
 app.use(express.json());
 
 mongoose
@@ -23,11 +30,29 @@ mongoose
   .then(console.log("Database connected ...."))
   .catch((err) => console.log(err));
 
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "images");
+    },
+    filename: (req, file, cb) => {
+      cb(null, req.body.name);
+    },
+  });
+  
+  const upload = multer({ storage: storage });
+  app.post("/api/upload", upload.single("file"), (req, res) => {
+    res.status(200).json("File has been uploaded");
+  });
+  
+
+
+
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/categories", categoryRoute);
-app.use("/api/upload-image", uploadImage);
+app.use("/api/upload", uploadImage);
 
 app.listen("5000", () => {
   console.log("Server is running ....");

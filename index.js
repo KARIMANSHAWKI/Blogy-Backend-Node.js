@@ -6,7 +6,7 @@ const multer = require("multer");
 const path = require("path");
 const connectDB = require("./config/db");
 
-// LOAD ROUTES
+// LOAD ROUTE
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/users");
 const postRoute = require("./routes/posts");
